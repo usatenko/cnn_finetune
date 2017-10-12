@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import tensorflow as tf
+import keras.backend.tensorflow_backend as ktf
+
 from keras.layers.merge import concatenate
 from keras.models import Sequential
 from keras.optimizers import SGD
@@ -10,6 +13,19 @@ from keras import backend as K
 from sklearn.metrics import log_loss
 
 from load_cifar10 import load_cifar10_data
+
+def get_session(gpu_fraction=0.333):
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_fraction,
+                                allow_growth=True)
+    return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+ktf.set_session(get_session())
+
+# ### start session
+# config=tf.ConfigProto()
+# # config.gpu_options.per_process_gpu_memory_fraction=0.98
+# config.gpu_options.allocator_type="BFC"
+# config.log_device_placement=True
+# sess=tf.Session(config=config)
 
 def conv2d_bn(x, nb_filter, nb_row, nb_col,
               padding='same', strides=(1, 1), use_bias=False):
