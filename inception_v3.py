@@ -2,7 +2,8 @@
 
 from keras.models import Sequential
 from keras.optimizers import SGD
-from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation
+from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, \
+    merge, Reshape, Activation, Conv2D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras import backend as K
@@ -27,7 +28,7 @@ def conv2d_bn(x, nb_filter, nb_row, nb_col,
         bn_axis = 1
     else:
         bn_axis = -1
-    x = Convolution2D(nb_filter, (nb_row, nb_col),
+    x = Conv2D(nb_filter, (nb_row, nb_col),
                       strides=strides,
                       activation='relu',
                       padding=padding,
