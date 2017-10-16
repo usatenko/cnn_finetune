@@ -32,7 +32,7 @@ def conv2d_bn(x, nb_filter, nb_row, nb_col,
                       strides=strides,
                       activation='relu',
                       padding=padding,
-                      name=conv_name)(x)
+                      name=conv_name, data_format='channels_first')(x)
     x = BatchNormalization(axis=bn_axis, name=bn_name)(x)
     return x
 
