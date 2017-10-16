@@ -24,7 +24,7 @@ def conv2d_bn(x, nb_filter, nb_row, nb_col,
         bn_name = None
         conv_name = None
     bn_axis = 1
-    x = Convolution2D(nb_filter, nb_row, nb_col,
+    x = Convolution2D(nb_filter, (nb_row, nb_col),
                       strides=strides,
                       activation='relu',
                       padding=padding,
