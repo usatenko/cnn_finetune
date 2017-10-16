@@ -14,16 +14,17 @@ from sklearn.metrics import log_loss
 
 from load_cifar10 import load_cifar10_data
 
-def get_session(gpu_fraction=0.98):
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_fraction,
-                                allow_growth=True)
-    return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
-ktf.set_session(get_session())
-
+# def get_session(gpu_fraction=0.98):
+#     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_fraction,
+#                                 allow_growth=True)
+#     return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.33
 config.gpu_options.allow_growth = True
 sess = tf.Session(config = config)
+ktf.set_session(sess)
+
+
 
 # ### start session
 # config=tf.ConfigProto()
