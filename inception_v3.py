@@ -12,7 +12,7 @@ from sklearn.metrics import log_loss
 from load_cifar10 import load_cifar10_data
 
 def conv2d_bn(x, nb_filter, nb_row, nb_col,
-              border_mode='same', subsample=(1, 1),
+              padding='same', strides=(1, 1),
               name=None):
     """
     Utility function to apply conv + BN for Inception V3.
@@ -25,9 +25,9 @@ def conv2d_bn(x, nb_filter, nb_row, nb_col,
         conv_name = None
     bn_axis = 1
     x = Convolution2D(nb_filter, nb_row, nb_col,
-                      subsample=subsample,
+                      strides=strides,
                       activation='relu',
-                      border_mode=border_mode,
+                      padding=padding,
                       name=conv_name)(x)
     x = BatchNormalization(axis=bn_axis, name=bn_name)(x)
     return x
@@ -49,13 +49,13 @@ def inception_v3_model(img_rows, img_cols, channel=1, num_classes=None):
     """
     channel_axis = 1
     img_input = Input(shape=(channel, img_rows, img_cols))
-    x = conv2d_bn(img_input, 32, 3, 3, subsample=(2, 2), border_mode='valid')
-    x = conv2d_bn(x, 32, 3, 3, border_mode='valid')
+    x = conv2d_bn(img_input, 32, 3, 3, strides=(2, 2), padding='valid')
+    x = conv2d_bn(x, 32, 3, 3, padding='valid')
     x = conv2d_bn(x, 64, 3, 3)
     x = MaxPooling2D((3, 3), strides=(2, 2))(x)
 
-    x = conv2d_bn(x, 80, 1, 1, border_mode='valid')
-    x = conv2d_bn(x, 192, 3, 3, border_mode='valid')
+    x = conv2d_bn(x, 80, 1, 1, padding='valid')
+    x = conv2d_bn(x, 192, 3, 3, padding='valid')
     x = MaxPooling2D((3, 3), strides=(2, 2))(x)
 
     # mixed 0, 1, 2: 35 x 35 x 256
@@ -77,12 +77,12 @@ def inception_v3_model(img_rows, img_cols, channel=1, num_classes=None):
                   name='mixed' + str(i))
 
     # mixed 3: 17 x 17 x 768
-    branch3x3 = conv2d_bn(x, 384, 3, 3, subsample=(2, 2), border_mode='valid')
+    branch3x3 = conv2d_bn(x, 384, 3, 3, strides=(2, 2), padding='valid')
 
     branch3x3dbl = conv2d_bn(x, 64, 1, 1)
     branch3x3dbl = conv2d_bn(branch3x3dbl, 96, 3, 3)
     branch3x3dbl = conv2d_bn(branch3x3dbl, 96, 3, 3,
-                             subsample=(2, 2), border_mode='valid')
+                             strides=(2, 2), padding='valid')
 
     branch_pool = MaxPooling2D((3, 3), strides=(2, 2))(x)
     x = merge([branch3x3, branch3x3dbl, branch_pool],
@@ -151,13 +151,13 @@ def inception_v3_model(img_rows, img_cols, channel=1, num_classes=None):
     # mixed 8: 8 x 8 x 1280
     branch3x3 = conv2d_bn(x, 192, 1, 1)
     branch3x3 = conv2d_bn(branch3x3, 320, 3, 3,
-                          subsample=(2, 2), border_mode='valid')
+                          strides=(2, 2), padding='valid')
 
     branch7x7x3 = conv2d_bn(x, 192, 1, 1)
     branch7x7x3 = conv2d_bn(branch7x7x3, 192, 1, 7)
     branch7x7x3 = conv2d_bn(branch7x7x3, 192, 7, 1)
     branch7x7x3 = conv2d_bn(branch7x7x3, 192, 3, 3,
-                            subsample=(2, 2), border_mode='valid')
+                            strides=(2, 2), padding='valid')
 
     branch_pool = AveragePooling2D((3, 3), strides=(2, 2))(x)
     x = merge([branch3x3, branch7x7x3, branch_pool],
