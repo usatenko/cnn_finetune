@@ -21,6 +21,7 @@ def get_session(gpu_fraction=0.98):
 ktf.set_session(get_session())
 
 config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.33
 config.gpu_options.allow_growth = True
 sess = tf.Session(config = config)
 
